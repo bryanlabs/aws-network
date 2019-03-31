@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Basic Network Stack. (VPC, 3 Subnets.)
+Outputs:
+  Name:
+    Description: Stack Name
+    Export:
+      Name: !Sub ${AWS::StackName}-Name
+    Value: !Ref AWS::StackName
+  VpcId:
+    Description: VPC ID
+    Export:
+      Name: !Sub ${AWS::StackName}-VpcId
+    Value: !Ref VPC
+  SubnetAId:
+    Description: Private subnet A Id
+    Export:
+      Name: !Sub ${AWS::StackName}-SubnetAId
+    Value: !Ref SubnetA
+  SubnetBId:
+    Description: Private subnet B Id
+    Export:
+      Name: !Sub ${AWS::StackName}-SubnetBId
+    Value: !Ref SubnetB
+  SubnetCId:
+    Description: Private subnet C Id
+    Export:
+      Name: !Sub ${AWS::StackName}-SubnetCId
+    Value: !Ref SubnetC
+Parameters:
+  ZoneA:
+    ConstraintDescription: Must be a valid zone
+    Default: us-east-1a
+    Description: The first zone in the region
+    Type: AWS::EC2::AvailabilityZone::Name
+  ZoneB:
+    ConstraintDescription: Must be a valid zone
+    Default: us-east-1b
+    Description: The second zone in the region
+    Type: AWS::EC2::AvailabilityZone::Name
+  ZoneC:
+    ConstraintDescription: Must be a valid zone
+    Default: us-east-1c
+    Description: The third zone in the region
+    Type: AWS::EC2::AvailabilityZone::Name
+  VPCCIDR:
+    ConstraintDescription: Must be a valid IP CIDR.
+    Description: The CIDR block for the VPC.
+    Type: String
+    AllowedPattern: '(?<!\d\.)(?<!\d)(?:\d{1,3}\.){3}\d{1,3}/\d{1,2}(?!\d|(?:\.\d))'
+  SubnetACIDR:
+    ConstraintDescription: Must be a valid IP CIDR.
+    Description: The CIDR block for SubnetA.
+    Type: String
+    AllowedPattern: '(?<!\d\.)(?<!\d)(?:\d{1,3}\.){3}\d{1,3}/\d{1,2}(?!\d|(?:\.\d))'
+  SubnetBCIDR:
+    ConstraintDescription: Must be a valid IP CIDR.
+    Description: The CIDR block for SubnetC.
+    Type: String
+    AllowedPattern: '(?<!\d\.)(?<!\d)(?:\d{1,3}\.){3}\d{1,3}/\d{1,2}(?!\d|(?:\.\d))'
+  SubnetCCIDR:
+    ConstraintDescription: Must be a valid IP CIDR.
+    Description: The CIDR block for SubnetC.
+    Type: String
+    AllowedPattern: '(?<!\d\.)(?<!\d)(?:\d{1,3}\.){3}\d{1,3}/\d{1,2}(?!\d|(?:\.\d))'
+Resources:
+  VPC:
+    Properties:
+      CidrBlock: !Ref VPCCIDR
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName
+    Type: AWS::EC2::VPC
+  SubnetA:
+    Properties:
+      AvailabilityZone: !Ref ZoneA
+      CidrBlock: !Ref SubnetACIDR
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-SubnetA
+      VpcId: !Ref VPC
+    Type: AWS::EC2::Subnet
+  SubnetB:
+    Properties:
+      AvailabilityZone: !Ref ZoneB
+      CidrBlock: !Ref SubnetBCIDR
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-SubnetB
+      VpcId: !Ref VPC
+    Type: AWS::EC2::Subnet
+  SubnetC:
+    Properties:
+      AvailabilityZone: !Ref ZoneC
+      CidrBlock: !Ref SubnetCCIDR
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-SubnetC
+      VpcId: !Ref VPC
+    Type: AWS::EC2::Subnet
